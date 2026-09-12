@@ -1,0 +1,24 @@
+function e(e){let t=document.createElement(`div`);return t.textContent=e,t.innerHTML}function t(e){return(!isFinite(e)||e<0)&&(e=0),`${Math.floor(e/60)}:${Math.floor(e%60).toString().padStart(2,`0`)}`}function n(t){return[[t.dataset.spotify||``,`btn-spotify`,`Spotify`],[t.dataset.yandex||``,`btn-yandex`,`Yandex`],[t.dataset.apple||``,`btn-apple`,`Apple Music`],[t.dataset.deezer||``,`btn-deezer`,`Deezer`],[t.dataset.soundcloud||``,`btn-soundcloud`,`SoundCloud`]].filter(([e])=>e).map(([t,n,r])=>`<a href="${e(t)}" target="_blank" rel="noopener noreferrer" class="${n}">${r}</a>`).join(``)}function r(r){let i=r.getBoundingClientRect(),a=r.dataset.name||``,o=r.dataset.image||``,s=r.dataset.demo||``,c=document.createElement(`div`);c.className=`artist-modal-backdrop`;let l=document.createElement(`div`);l.className=`artist-modal`,l.setAttribute(`role`,`dialog`),l.setAttribute(`aria-modal`,`true`),l.setAttribute(`aria-label`,a);let u=`/TamatiRecords`;l.innerHTML=`
+        
+        <div class="modal-photo">
+          <img src="${u}/images/${e(o)}" alt="${e(a)}" />
+        </div>
+        <h3 class="modal-name">${e(a)}</h3>
+        ${s?`
+        <div class="modal-player">
+          <button class="play-btn" type="button" aria-label="Воспроизвести">
+            <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+          <div class="timeline">
+            <div class="timeline-track">
+              <div class="timeline-progress"></div>
+              <div class="timeline-handle"></div>
+            </div>
+          </div>
+          <audio class="demo-audio" src="${u}/audio/${e(s)}" preload="metadata"></audio>
+        </div>`:``}
+        <div class="modal-links">
+          ${n(r)}
+        </div>
+      `,c.appendChild(l),document.body.appendChild(c),document.body.style.overflow=`hidden`;let d=l.getBoundingClientRect(),f=i.left+i.width/2-(d.left+d.width/2),p=i.top+i.height/2-(d.top+d.height/2),m=i.width/d.width,h=i.height/d.height;l.style.transformOrigin=`center center`,l.style.transform=`translate(${f}px, ${p}px) scale(${m}, ${h})`,l.style.opacity=`0.5`,l.offsetHeight,requestAnimationFrame(()=>{c.classList.add(`visible`),l.style.transition=`transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease`,l.style.transform=`translate(0, 0) scale(1, 1)`,l.style.opacity=`1`});let g=l.querySelector(`.demo-audio`),_=l.querySelector(`.play-btn`),v=l.querySelector(`.icon-play`),y=l.querySelector(`.icon-pause`),b=l.querySelector(`.timeline`),x=l.querySelector(`.timeline-progress`),S=l.querySelector(`.timeline-handle`),C=l.querySelector(`.time-label`),w=!1;function T(e){let t=Math.min(1,Math.max(0,e));x&&(x.style.width=`${t*100}%`),S&&(S.style.left=`${t*100}%`)}function E(){if(!g||!C)return;let e=isFinite(g.duration)?g.duration:0;C.textContent=`${t(g.currentTime)} / ${t(e)}`}if(g&&_&&v&&y&&(_.addEventListener(`click`,()=>{g.paused?g.play():g.pause()}),g.addEventListener(`play`,()=>{_.classList.add(`is-playing`),v.style.display=`none`,y.style.display=``}),g.addEventListener(`pause`,()=>{_.classList.remove(`is-playing`),v.style.display=``,y.style.display=`none`}),g.addEventListener(`loadedmetadata`,E),g.addEventListener(`timeupdate`,()=>{w||!g.duration||(T(g.currentTime/g.duration),E())}),g.addEventListener(`ended`,()=>{T(0)}),b)){let e=e=>{let t=b.getBoundingClientRect(),n=(e-t.left)/t.width,r=Math.min(1,Math.max(0,n));T(r),g.duration&&(g.currentTime=r*g.duration,E())};b.addEventListener(`pointerdown`,t=>{w=!0,e(t.clientX),b.setPointerCapture(t.pointerId)}),b.addEventListener(`pointermove`,t=>{w&&e(t.clientX)}),b.addEventListener(`pointerup`,()=>{w=!1}),b.addEventListener(`pointercancel`,()=>{w=!1})}function D(){g&&g.pause();let e=l.getBoundingClientRect(),t=r.getBoundingClientRect(),n=t.left+t.width/2-(e.left+e.width/2),i=t.top+t.height/2-(e.top+e.height/2),a=t.width/e.width,o=t.height/e.height;c.classList.remove(`visible`),l.style.transition=`transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease`,l.style.transform=`translate(${n}px, ${i}px) scale(${a}, ${o})`,l.style.opacity=`0`;let s=()=>{c.remove(),document.body.style.overflow=``};l.addEventListener(`transitionend`,s,{once:!0}),setTimeout(s,500)}l.querySelector(`.modal-close`)?.addEventListener(`click`,D),c.addEventListener(`click`,e=>{e.target===c&&D()});function O(e){e.key===`Escape`&&(D(),document.removeEventListener(`keydown`,O))}document.addEventListener(`keydown`,O)}document.querySelectorAll(`.artist-card`).forEach(e=>{e.addEventListener(`click`,t=>{t.target.closest(`a`)||r(e)})});
